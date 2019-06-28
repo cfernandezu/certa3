@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<title>Usuarios</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<style type="text/css">
+		body{
+		background-color: #FFFFFF;
+		font-family: Arial;
+	}
+
+	table{
+		background-color: transparent;
+		text-align: center;
+		border-collapse: unset;
+		margin:100 auto;
+		width: 30%;
+
+	}
+
+	th, td{
+		border: transparent ;
+		padding: 20px;
+
+	}
+
+	thead{
+		background-color:#D33715;
+		border-bottom: solid 30px #D33715;
+		color: white; 
+	}
+
+	tr:nth-child(even){
+		background-color: #ddd;
+	}
+
+	tr:hover td{
+		background-color: #2155D4;
+		color: white;
+	}
+
+	
+	</style>
+
+
+
+</head>
+
+<body>
+    <div class="datagrid">
+	<table>
+		<h2>USUARIOS</h2>
+
+		<table>			
+				<td> Id </td>
+				<td> <input type="text" id="id"> </td>
+			
+			<tr>
+				<td> Rut </td>
+				<td > <input type="text" id="rut"> </td>
+			
+			
+				<td> Nombre </td>
+				<td> <input type="text" id="nombre"> </td>
+			
+			<tr>
+				<td> Apelldio </td>
+				<td> <input type="text" id="apellido"> </td>
+			
+		
+				<td> Carrera </td>
+				<td> <input type="text" id="carrera"> </td>
+			</tr>
+		
+				<td> Usuario </td>
+				<td> <input type="text" id="usuario"> </td>
+		
+		
+				<td> Password </td>
+				<td> <input type="text" id="password"> </td>
+		
+			
+		</table>
+		<br><br><br>
+		<input type="button"  id="agregar" value="Agregar">
+		<input type="button" id="modificar" value="Modificar">
+		<input type="button" id="eliminar" value="Eliminar">
+		<br><br><br>
+		<div id="dvdetalle">
+		<table>
+			<tr><td> ID </td><td> Rut </td><td> Nombre </td> <td> Apellido </td><td> Carrera</td> <td> Usuario </td><td> Password </td></tr>
+			{% for alumno in alumnos%}
+				<tr>
+					<td> {{alumno["id"]}} </td>
+					<td> {{alumno["rut"]}} </td>
+					<td> {{alumno["nombre"]}} </td>
+					<td> {{alumno["apellido"]}} </td>
+					<td> {{alumno["carrera"]}} </td>
+					<td> {{alumno["username"]}} </td>
+					<td> {{alumno["password"]}} </td></tr>
+			{% endfor%}
+		</table>
+		</div>
+	</table>
+	</div>
+</body>	
+</html>
+
+<script>
+	
+	 $(document).ready(function(){
+            //Perform Ajax request.
+            $.ajax({
+                url: '/detalleAlumnos',
+                type: 'get',
+                success: function(data){
+                    $('#dvdetalle').html(data);
+                }
+            });
+        });
+$("#agregar").click(function(){
+    $.post( "/actusuario",
+                { 	codigo: $("#id").val(),
+                	rut:$("#rut").val(),
+                   	nombre: $("#nombre").val(),
+                	apellido: $("#apellido").val(),
+                	carrera:$("#carrera").val(),
+                	usuario: $("#usuario").val(),
+                	pass:$("#password").val(),
+                      	operacion: "grabar"
+                },
+        function(data,status){
+          if (status=="success"){ 
+            $("#dvdetalle").html(data);
+          } 
+        });
+  });
+
+$("#modificar").click(function(){
+	$.post(	"/actusuario", 
+			{	codigo: $("#id").val(),
+                	rut:$("#rut").val(),
+                   	nombre: $("#nombre").val(),
+                	apellido: $("#apellido").val(),
+                	carrera:$("#carrera").val(),
+                	usuario: $("#usuario").val(),
+                	pass:$("#password").val(),
+                operacion: "modificar"
+			},
+			function(data,status){
+	          if (status=="success"){ 
+	            $("#dvdetalle").html(data);
+	        }   
+	    });
+});
+
+$("#eliminar").click(function(){
+	$.post(	"/actusuario", 
+			{	codigo: $("#id").val(),
+                operacion: "eliminar"
+			},
+			function(data,status){
+	          if (status=="success"){ 
+	            $("#dvdetalle").html(data);
+	          } 
+	        });
+});
+
+</script>
